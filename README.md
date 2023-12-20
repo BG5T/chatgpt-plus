@@ -1,38 +1,10 @@
 # ChatGPT-Plus
 
-·增加了反代设置（可选关闭不影响之前存储的数据），无需存储图片到本地OSS。
-·增加保存图片到OSS设置（在图片的左上角有个收藏按钮）
-go.mod
-//替换discordgo依赖地址 github.com/bg5t/mydiscordgo 0.28.1 版本号随便设置的，主要是为了把反代地址塞进去，所以不能用原来作者的。
+* 增加了反代设置（可选关闭不影响之前存储的数据），无需存储图片到本地OSS。
+* 增加保存图片到OSS设置（在图片的左上角有个收藏按钮）
 
-api\service\mj\bot.go
-// 导入包 discordgo "github.com/bg5t/mydiscordgo"
-// 在func Run里把配置文件中的 gateway 和cdn和wss反代地址传给discordgo
-
-api\service\mj\client.go
-// 在func Imagine和Upscale和Variation里增加了反代地址
-
-api\service\mj\service.go
-// 在func Service里的Notify增加了反代地址
-
-api\core\types\config.go
-// 在type MidJourneyConfig里增加了下面4个字段
-// Discord        string // https://discord.com 反代地址
-// Discordcdn     string // https://cdn.discordapp.com 反代地址
-// Cdn            bool   // 是否启用反代
-// Discordgateway string // wss://gateway.discord.gg wws反代地址
-
-api\handler\mj_handler.go
-
-// 增加func Save接口，可以自己手动选择需要存储的图片到OSS，避免丢失。
-
-web\src\views\ImageMj.vue ImageSD.vue
-web\src\assets\css\image-mj.css image-sd.css
-web\src\assets\css\task-list.styl
-//在图片上增加收藏按钮，点击会从远端地址存储到OSS
-//修改img_url的后缀参数兼容阿里云图片压缩和discord的webp压缩
-
- https://discord.com 反代地址 Nginx配置文件
+https://discord.com 反代地址 Nginx配置文件
+'''
   location ^~ /discord/ {
     proxy_pass https://discord.com/; 
     proxy_http_version 1.1; 
@@ -41,8 +13,9 @@ web\src\assets\css\task-list.styl
     add_header Cache-Control no-cache; 
     proxy_set_header Host discord.com; 
 }
-
- https://cdn.discordapp.com 反代地址 Nginx配置文件
+'''
+https://cdn.discordapp.com 反代地址 Nginx配置文件
+'''
 location ^~ /cdn {
     proxy_pass https://media.discordapp.net/; 
     proxy_set_header Host media.discordapp.net; 
@@ -60,9 +33,9 @@ location ^~ /cdn {
     if ( $uri ~* "\.(gif|png|jpg|css|js|woff|woff2|webp)$" ) {
         expires 1d; 
     }
-}
-
- wss://gateway.discord.gg wws反代地址 Nginx配置文件
+'''
+wss://gateway.discord.gg wws反代地址 Nginx配置文件
+'''
 location ^~ /wss {
     proxy_pass https://gateway.discord.gg; 
     proxy_set_header Host gateway.discord.gg; 
@@ -71,7 +44,7 @@ location ^~ /wss {
     proxy_http_version 1.1; 
     add_header Cache-Control no-cache; 
 }
-
+'''
 
 **ChatGPT-PLUS** 基于 AI 大语言模型 API 实现的 AI 助手全套开源解决方案，自带运营管理后台，开箱即用。集成了 OpenAI, Azure,
 ChatGLM,讯飞星火，文心一言等多个平台的大语言模型。集成了 MidJourney 和 Stable Diffusion AI绘画功能。主要有如下特性：
