@@ -69,10 +69,10 @@ WeChatBot = false
   BotToken = ""
   GuildId = ""
   ChanelId = ""
-  Discord = "https://open.myaitool.top/discord"
-  Discordcdn = "https://open.myaitool.top/cdn"
+  Discord = ""
+  Discordcdn = ""
   Cdn = false
-  Discordgateway = "wss://open.myaitool.top/wss"
+  Discordgateway = ""
 
 [[SdConfigs]]
   Enabled = false
