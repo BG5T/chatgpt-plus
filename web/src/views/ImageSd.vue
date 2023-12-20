@@ -354,7 +354,7 @@
               <template #default="scope">
                 <div class="job-item animate" @click="showTask(scope.item)">
                   <el-image
-                      :src="scope.item['img_url']+'?imageView2/1/w/240/h/240/q/75'"
+                      :src="scope.item['img_url']+'?x-oss-process=image/quality,q_80&format=webp'"
                       fit="cover"
                       loading="lazy">
                     <template #placeholder>
@@ -372,6 +372,9 @@
                     </template>
                   </el-image>
 
+                  <div class="save">
+                    <el-button type="warning" :icon="Star" @click="saveImage(scope.item)" circle />
+                  </div>
                   <div class="remove">
                     <el-button type="danger" :icon="Delete" @click="removeImage($event,scope.item)" circle/>
                   </div>
@@ -502,7 +505,7 @@
 
 <script setup>
 import {onMounted, ref} from "vue"
-import {Delete, DocumentCopy, InfoFilled, Orange, Picture, Refresh} from "@element-plus/icons-vue";
+import {Delete, DocumentCopy, InfoFilled, Orange, Picture, Refresh,Star} from "@element-plus/icons-vue";
 import {httpGet, httpPost} from "@/utils/http";
 import {ElMessage, ElMessageBox, ElNotification} from "element-plus";
 import ItemList from "@/components/ItemList.vue";
@@ -680,6 +683,24 @@ const removeImage = (event, item) => {
   })
 }
 
+const saveImage = (item) => {
+  ElMessageBox.confirm(
+      '此操作将会把图片保存到服务器，强烈建议下载到本地存放，继续操作吗?',
+      '保存提示',
+      {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  ).then(() => {
+    httpPost("/api/mj/save", {id: item.id, img_url: item.img_url}).then(() => {
+      ElMessage.success("保存成功")
+    }).catch(e => {
+      ElMessage.error("保存失败：" + e.message)
+    })
+  }).catch(() => {
+  })
+}
 </script>
 
 <style lang="stylus">

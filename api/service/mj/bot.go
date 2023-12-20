@@ -4,16 +4,17 @@ import (
 	"chatplus/core/types"
 	logger2 "chatplus/logger"
 	"chatplus/utils"
-	"github.com/bwmarrin/discordgo"
-	"github.com/gorilla/websocket"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
+
+	discordgo "github.com/bg5t/mydiscordgo"
+	"github.com/gorilla/websocket"
 )
 
 // MidJourney 机器人
-
+// 修改了Run，在Run里把配置文件中的 gateway 和cdn和wss反代地址传给discordgo
 var logger = logger2.GetLogger()
 
 type Bot struct {
@@ -50,6 +51,19 @@ func NewBot(name string, proxy string, config *types.MidJourneyConfig, service *
 }
 
 func (b *Bot) Run() error {
+
+	if b.config.Cdn {
+		discordgo.SetEndpointDiscord(b.config.Discord)
+		discordgo.SetEndpointCDN(b.config.Discordcdn)
+		discordgo.SetEndpointStatus(b.config.Discord + "/api/v2/")
+		b.bot.MjGateway = b.config.Discordgateway + "/"
+	} else {
+		discordgo.SetEndpointDiscord("https://discord.com")
+		discordgo.SetEndpointCDN("https://cdn.discordapp.com")
+		discordgo.SetEndpointStatus("https://discord.com/api/v2/")
+		b.bot.MjGateway = "wss://gateway.discord.gg"
+	}
+
 	b.bot.Identify.Intents = discordgo.IntentsAllWithoutPrivileged | discordgo.IntentsGuildMessages | discordgo.IntentMessageContent
 	b.bot.AddHandler(b.messageCreate)
 	b.bot.AddHandler(b.messageUpdate)

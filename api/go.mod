@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.1.0
 	github.com/aliyun/alibaba-cloud-sdk-go v1.62.405
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.9+incompatible
-	github.com/bwmarrin/discordgo v0.27.1
+	github.com/bg5t/mydiscordgo v0.28.1
 	github.com/eatmoreapple/openwechat v1.2.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-redis/redis/v8 v8.11.5
@@ -25,6 +25,8 @@ require (
 )
 
 require github.com/xxl-job/xxl-job-executor-go v1.2.0
+
+require go.uber.org/mock v0.3.0 // indirect
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
@@ -58,8 +60,8 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/qtls-go1-19 v0.3.2 // indirect
-	github.com/quic-go/qtls-go1-20 v0.2.2 // indirect
-	github.com/quic-go/quic-go v0.35.1 // indirect
+	github.com/quic-go/qtls-go1-20 v0.4.1 // indirect
+	github.com/quic-go/quic-go v0.40.1 // indirect
 	github.com/refraction-networking/utls v1.3.2 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect

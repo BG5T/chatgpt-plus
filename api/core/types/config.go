@@ -34,11 +34,15 @@ type ChatPlusApiConfig struct {
 }
 
 type MidJourneyConfig struct {
-	Enabled   bool
-	UserToken string
-	BotToken  string
-	GuildId   string // Server ID
-	ChanelId  string // Chanel ID
+	Enabled        bool
+	UserToken      string
+	BotToken       string
+	GuildId        string // Server ID
+	ChanelId       string // Chanel ID
+	Discord        string // https://discord.com 反代地址
+	Discordcdn     string // https://cdn.discordapp.com 反代地址
+	Cdn            bool   // 是否启用反代
+	Discordgateway string // wss://gateway.discord.gg wws反代地址
 }
 
 type StableDiffusionConfig struct {

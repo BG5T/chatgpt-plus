@@ -67,8 +67,14 @@ func (c *Client) Imagine(prompt string) error {
 			},
 		},
 	}
-
-	url := "https://discord.com/api/v9/interactions"
+	// 是否启用反代
+	var url string
+	if c.config.Cdn {
+		url = c.config.Discord + "/api/v9/interactions"
+	} else {
+		url = "https://discord.com/api/v9/interactions"
+	}
+	// url := "https://discord.com/api/v9/interactions"
 	r, err := c.client.R().SetHeader("Authorization", c.config.UserToken).
 		SetHeader("Content-Type", "application/json").
 		SetBody(interactionsReq).
@@ -98,8 +104,14 @@ func (c *Client) Upscale(index int, messageId string, hash string) error {
 		},
 		Nonce: fmt.Sprintf("%d", time.Now().UnixNano()),
 	}
-
-	url := "https://discord.com/api/v9/interactions"
+	// 是否启用反代
+	var url string
+	if c.config.Cdn {
+		url = c.config.Discord + "/api/v9/interactions"
+	} else {
+		url = "https://discord.com/api/v9/interactions"
+	}
+	// url := "https://discord.com/api/v9/interactions"
 	var res InteractionsResult
 	r, err := c.client.R().SetHeader("Authorization", c.config.UserToken).
 		SetHeader("Content-Type", "application/json").
@@ -130,8 +142,14 @@ func (c *Client) Variation(index int, messageId string, hash string) error {
 		},
 		Nonce: fmt.Sprintf("%d", time.Now().UnixNano()),
 	}
-
-	url := "https://discord.com/api/v9/interactions"
+	// 是否启用反代
+	var url string
+	if c.config.Cdn {
+		url = c.config.Discord + "/api/v9/interactions"
+	} else {
+		url = "https://discord.com/api/v9/interactions"
+	}
+	// url := "https://discord.com/api/v9/interactions"
 	var res InteractionsResult
 	r, err := c.client.R().SetHeader("Authorization", c.config.UserToken).
 		SetHeader("Content-Type", "application/json").

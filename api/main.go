@@ -240,6 +240,7 @@ func main() {
 			group.POST("image", h.Image)
 			group.GET("jobs", h.JobList)
 			group.POST("remove", h.Remove)
+			group.POST("save", h.Save)
 		}),
 
 		// 管理后台控制器

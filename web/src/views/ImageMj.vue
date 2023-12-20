@@ -359,7 +359,7 @@
               <template #default="scope">
                 <div class="job-item">
                   <el-image
-                      :src="scope.item.type === 'upscale' ? scope.item['img_url'] + '?imageView2/1/w/240/h/300/q/75' : scope.item['img_url'] + '?imageView2/1/w/240/h/240/q/75'"
+                      :src="scope.item.type === 'upscale' ? scope.item['img_url'] + '?x-oss-process=image/quality,q_80&format=webp' : scope.item['img_url'] + '?x-oss-process=image/quality,q_80&format=webp'"
                       :class="scope.item.type === 'upscale' ? 'upscale' : ''" :zoom-rate="1.2"
                       :preview-src-list="[scope.item['img_url']]" fit="cover" :initial-index="scope.index"
                       loading="lazy" v-if="scope.item.progress > 0">
@@ -417,7 +417,9 @@
                       </ul>
                     </div>
                   </div>
-
+                  <div class="save">
+                    <el-button type="warning" :icon="Star" @click="saveImage(scope.item)" circle />
+                  </div>
                   <div class="remove">
                     <el-button type="danger" :icon="Delete" @click="removeImage(scope.item)" circle/>
                   </div>
@@ -444,7 +446,8 @@ import {
   InfoFilled,
   Picture,
   Plus,
-  Refresh
+  Refresh,
+  Star
 } from "@element-plus/icons-vue";
 import Compressor from "compressorjs";
 import {httpGet, httpPost} from "@/utils/http";
@@ -682,7 +685,7 @@ const send = (url, index, item) => {
 
 const removeImage = (item) => {
   ElMessageBox.confirm(
-      '此操作将会删除任务和图片，继续操作码?',
+      '此操作将会删除任务和图片，继续操作吗?',
       '删除提示',
       {
         confirmButtonText: '确认',
@@ -699,6 +702,24 @@ const removeImage = (item) => {
   })
 }
 
+const saveImage = (item) => {
+  ElMessageBox.confirm(
+      '此操作将会把图片保存到服务器，强烈建议下载到本地存放，继续操作吗?',
+      '保存提示',
+      {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  ).then(() => {
+    httpPost("/api/mj/save", {id: item.id, img_url: item.img_url}).then(() => {
+      ElMessage.success("保存成功")
+    }).catch(e => {
+      ElMessage.error("保存失败：" + e.message)
+    })
+  }).catch(() => {
+  })
+}
 </script>
 
 <style lang="stylus">

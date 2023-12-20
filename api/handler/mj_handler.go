@@ -12,18 +12,21 @@ import (
 	"chatplus/utils/resp"
 	"encoding/base64"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
+// 增加了config *types.MidJourneyConfig
 type MidJourneyHandler struct {
 	BaseHandler
 	db        *gorm.DB
 	pool      *mj.ServicePool
 	snowflake *service.Snowflake
 	uploader  *oss.UploaderManager
+	config    *types.MidJourneyConfig
 }
 
 func NewMidJourneyHandler(app *core.AppServer, db *gorm.DB, snowflake *service.Snowflake, pool *mj.ServicePool, manager *oss.UploaderManager) *MidJourneyHandler {
@@ -34,6 +37,7 @@ func NewMidJourneyHandler(app *core.AppServer, db *gorm.DB, snowflake *service.S
 		uploader:  manager,
 	}
 	h.App = app
+
 	return &h
 }
 
@@ -295,7 +299,6 @@ func (h *MidJourneyHandler) JobList(c *gin.Context) {
 				h.db.Delete(&item)
 				continue
 			}
-
 			// 正在运行中任务使用代理访问图片
 			if item.ImgURL == "" && item.OrgURL != "" {
 				image, err := utils.DownloadImage(item.OrgURL, h.App.Config.ProxyURL)
@@ -329,7 +332,38 @@ func (h *MidJourneyHandler) Remove(c *gin.Context) {
 	}
 
 	// remove image
+
 	err := h.uploader.GetUploadHandler().Delete(data.ImgURL)
+	if err != nil {
+		logger.Error("remove image failed: ", err)
+	}
+
+	resp.SUCCESS(c)
+}
+
+func (h *MidJourneyHandler) Save(c *gin.Context) {
+	var data struct {
+		Id     uint   `json:"id"`
+		ImgURL string `json:"img_url"`
+	}
+	if err := c.ShouldBindJSON(&data); err != nil {
+		resp.ERROR(c, types.InvalidArgs)
+		return
+	}
+	imgURL, err := h.uploader.GetUploadHandler().PutImg(data.ImgURL, true)
+	if err != nil {
+		logger.Error("error with download img: ", err.Error())
+		return
+	}
+
+	// 执行更新操作,把反代地址替换为OSS地址
+	res := h.db.Model(&model.MidJourneyJob{}).Where("id = ?", data.Id).Update("img_url", imgURL)
+	if res.Error != nil {
+		resp.ERROR(c, res.Error.Error())
+		return
+	}
+
+	err = h.uploader.GetUploadHandler().Delete(data.ImgURL)
 	if err != nil {
 		logger.Error("remove image failed: ", err)
 	}

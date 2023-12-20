@@ -219,3 +219,28 @@ func (h *SdJobHandler) Remove(c *gin.Context) {
 
 	resp.SUCCESS(c)
 }
+
+func (h *SdJobHandler) Save(c *gin.Context) {
+	var data struct {
+		Id     uint   `json:"id"`
+		ImgURL string `json:"img_url"`
+	}
+	if err := c.ShouldBindJSON(&data); err != nil {
+		resp.ERROR(c, types.InvalidArgs)
+		return
+	}
+
+	imgURL, err := h.uploader.GetUploadHandler().PutImg(data.ImgURL, false)
+	if err != nil {
+		logger.Error("error with download img: ", err.Error())
+		return
+	}
+
+	// 执行更新操作,把反代地址替换为OSS地址
+	res := h.db.Model(&model.MidJourneyJob{}).Where("id = ?", data.Id).Update("img_url", imgURL)
+	if res.Error != nil {
+		resp.ERROR(c, res.Error.Error())
+		return
+	}
+	resp.SUCCESS(c)
+}

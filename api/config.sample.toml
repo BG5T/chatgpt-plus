@@ -37,7 +37,7 @@ WeChatBot = false
    Active = "local" # 默认使用本地文件存储引擎
    [OSS.Local]
      BasePath = "./static/upload" # 本地文件上传根路径
-     BaseURL = "http://localhost:5678/static/upload" # 本地上传文件根 URL 如果是线上，则直接设置为 /static/upload 即可
+     BaseURL = "/static/upload" # 本地测试上传文件根 URL为：http://localhost:5678/static/upload 如果是线上，则直接设置为 /static/upload 即可
    [OSS.Minio]
      Endpoint = "" # 如 172.22.11.200:9000
      AccessKey = "" # 自己去 Minio 控制台去创建一个 Access Key
@@ -58,6 +58,10 @@ WeChatBot = false
   BotToken = ""
   GuildId = ""
   ChanelId = ""
+  Discord = "https://open.myaitool.top/discord" # https://discord.com 反代地址
+  Discordcdn = "https://open.myaitool.top/cdn"  # https://cdn.discordapp.com 反代地址
+  Cdn = false   # 开启反代开关，true为开
+  Discordgateway = "wss://open.myaitool.top/wss" # wss://gateway.discord.gg wws反代地址 
 
 [[MjConfigs]]
   Enabled = false
@@ -65,6 +69,10 @@ WeChatBot = false
   BotToken = ""
   GuildId = ""
   ChanelId = ""
+  Discord = "https://open.myaitool.top/discord"
+  Discordcdn = "https://open.myaitool.top/cdn"
+  Cdn = false
+  Discordgateway = "wss://open.myaitool.top/wss"
 
 [[SdConfigs]]
   Enabled = false

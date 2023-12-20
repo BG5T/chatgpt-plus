@@ -5,13 +5,16 @@ import (
 	"chatplus/service/oss"
 	"chatplus/store"
 	"chatplus/store/model"
-	"gorm.io/gorm"
 	"strings"
 	"sync/atomic"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 // Service MJ 绘画服务
+// 在Service里的Notify增加了反代
+
 type Service struct {
 	name             string  // service name
 	client           *Client // MJ client
@@ -139,14 +142,50 @@ func (s *Service) Notify(data CBReq) {
 	job.Hash = data.Image.Hash
 	job.OrgURL = data.Image.URL
 
-	res = s.db.Updates(&job)
-	if res.Error != nil {
-		logger.Error("error with update job: ", res.Error)
-		return
+	url := data.Image.URL
+	if s.client.config.Cdn {
+		if strings.Contains(url, "https://cdn.discordapp.com") {
+			job.ImgURL = strings.ReplaceAll(data.Image.URL, "https://cdn.discordapp.com", s.client.config.Discordcdn) // 为进行中的任务生成反代地址并显示
+		} else {
+			job.ImgURL = data.Image.URL
+		}
+		res = s.db.Updates(&job)
+
+		if res.Error != nil {
+			logger.Error("error with update job: ", res.Error)
+			return
+		}
 	}
+
+	// res = s.db.Updates(&job)
+	// if res.Error != nil {
+	// 	logger.Error("error with update job: ", res.Error)
+	// 	return
+	// }
 
 	// upload image
 	if data.Status == Finished {
+
+		//启用CDN转发图片
+		url := data.Image.URL
+		var newURL string
+		if s.client.config.Cdn {
+			if strings.Contains(url, "https://cdn.discordapp.com") {
+				newURL = strings.ReplaceAll(url, "https://cdn.discordapp.com", s.client.config.Discordcdn)
+			} else {
+				newURL = strings.ReplaceAll(url, "https://media.discordapp.net", s.client.config.Discordcdn) // 处理 url 不包含 "https://cdn.discordapp.com" 的情况
+			}
+			job.ImgURL = newURL
+			res = s.db.Updates(&job)
+
+			if res.Error != nil {
+				logger.Error("error with update job: ", res.Error)
+			}
+			return
+		}
+
+		//不启用CDN转发图片，保存图片到OSS
+
 		imgURL, err := s.uploadManager.GetUploadHandler().PutImg(data.Image.URL, true)
 		if err != nil {
 			logger.Error("error with download img: ", err.Error())
