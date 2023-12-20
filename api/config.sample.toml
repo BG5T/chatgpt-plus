@@ -58,10 +58,10 @@ WeChatBot = false
   BotToken = ""
   GuildId = ""
   ChanelId = ""
-  Discord = "https://open.myaitool.top/discord" # https://discord.com 反代地址
-  Discordcdn = "https://open.myaitool.top/cdn"  # https://cdn.discordapp.com 反代地址
+  Discord = "" # https://discord.com 反代地址
+  Discordcdn = ""  # https://cdn.discordapp.com 反代地址
   Cdn = false   # 开启反代开关，true为开
-  Discordgateway = "wss://open.myaitool.top/wss" # wss://gateway.discord.gg wws反代地址 
+  Discordgateway = "" # wss://gateway.discord.gg wws反代地址 
 
 [[MjConfigs]]
   Enabled = false
