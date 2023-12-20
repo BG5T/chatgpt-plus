@@ -234,6 +234,7 @@ func main() {
 			group.POST("variation", h.Variation)
 			group.GET("jobs", h.JobList)
 			group.POST("remove", h.Remove)
+			group.POST("save", h.Save)
 		}),
 		fx.Invoke(func(s *core.AppServer, h *handler.SdJobHandler) {
 			group := s.Engine.Group("/api/sd")
