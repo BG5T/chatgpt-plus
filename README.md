@@ -32,7 +32,7 @@ web\src\assets\css\task-list.styl
 //在图片上增加收藏按钮，点击会从远端地址存储到OSS
 //修改img_url的后缀参数兼容阿里云图片压缩和discord的webp压缩
 
-# https://discord.com 反代地址 Nginx配置文件
+ https://discord.com 反代地址 Nginx配置文件
   location ^~ /discord/ {
     proxy_pass https://discord.com/; 
     proxy_http_version 1.1; 
@@ -42,7 +42,7 @@ web\src\assets\css\task-list.styl
     proxy_set_header Host discord.com; 
 }
 
-# https://cdn.discordapp.com 反代地址 Nginx配置文件
+ https://cdn.discordapp.com 反代地址 Nginx配置文件
 location ^~ /cdn {
     proxy_pass https://media.discordapp.net/; 
     proxy_set_header Host media.discordapp.net; 
@@ -62,7 +62,7 @@ location ^~ /cdn {
     }
 }
 
-# wss://gateway.discord.gg wws反代地址 Nginx配置文件
+ wss://gateway.discord.gg wws反代地址 Nginx配置文件
 location ^~ /wss {
     proxy_pass https://gateway.discord.gg; 
     proxy_set_header Host gateway.discord.gg; 
